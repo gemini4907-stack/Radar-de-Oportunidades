@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar de Oportunidades - Emprendimiento Sostenible</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    @keyframes pulse-slow {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+    @keyframes radar-sweep {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .animate-radar {
+      animation: radar-sweep 12s linear infinite;
+      transform-origin: center;
+    }
+    .pulse-node {
+      animation: pulse-slow 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-12">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+          </svg>
+        </div>
+        <div>
+          <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider block">Rubén de Jesús Carretero Hazouri</span>
+          <h1 class="text-xl font-bold text-white tracking-tight">Radar de Oportunidades de Emprendimiento</h1>
+          <p class="text-xs text-slate-400">Mapeo del Entorno • Córdoba, Veracruz (ODS 11, 12, 13)</p>
+        </div>
+      </div>
+      
+      <!-- Filter / View Switcher -->
+      <div class="flex bg-slate-800/80 p-1 rounded-lg border border-slate-700/60 text-xs font-semibold">
+        <button id="btn-radar" onclick="switchView('radar')" class="px-4 py-1.5 rounded-md bg-emerald-500 text-slate-950 shadow transition-all">Vista Radar Graphic</button>
+        <button id="btn-cards" onclick="switchView('cards')" class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white transition-all">Fichas de Entorno</button>
+        <button id="btn-ideas" onclick="switchView('ideas')" class="px-4 py-1.5 rounded-md text-slate-400 hover:text-white transition-all">Ideas Derivadas</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub-bar Info -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-slate-900 border border-emerald-500/20 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg">
+      <div class="flex items-center gap-4">
+        <div class="hidden sm:flex h-12 w-12 rounded-full bg-emerald-500/20 items-center justify-center text-emerald-400 font-bold text-lg border border-emerald-500/30">
+          ODS
+        </div>
+        <div>
+          <div class="flex flex-wrap gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">ODS 12: Consumo Responsable</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30">ODS 13: Acción por el Clima</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">ODS 11: Ciudades Sostenibles</span>
+          </div>
+          <h2 class="text-sm sm:text-base font-semibold text-slate-200">Aprovechamiento Integral de Residuos Orgánicos Agrourbanos</h2>
+        </div>
+      </div>
+      <div class="text-right text-xs text-slate-400 border-t md:border-t-0 md:border-l border-slate-800 pt-3 md:pt-0 md:pl-6 w-full md:w-auto">
+        <span class="block text-slate-500 uppercase tracking-wider text-[10px]">Oportunidad Central</span>
+        <span class="text-emerald-400 font-bold">Transformar pasivos ambientales en insumos agrícolas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+
+    <!-- VIEW 1: INTERACTIVE RADAR GRAPHIC -->
+    <div id="view-radar" class="block">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        
+        <!-- Radar Graphic Center Display (7 Cols) -->
+        <div class="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 relative overflow-hidden flex flex-col items-center justify-center min-h-[520px] shadow-2xl">
+          
+          <!-- Radial Grid SVG Background -->
+          <svg class="absolute inset-0 w-full h-full text-slate-800/60 pointer-events-none" viewBox="0 0 500 500">
+            <!-- Radar Circles -->
+            <circle cx="250" cy="250" r="220" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" />
+            <circle cx="250" cy="250" r="160" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" />
+            <circle cx="250" cy="250" r="100" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="250" cy="250" r="40" fill="none" stroke="currentColor" stroke-width="1.5" />
+            
+            <!-- Axis Lines -->
+            <line x1="250" y1="30" x2="250" y2="470" stroke="currentColor" stroke-width="1.5" />
+            <line x1="30" y1="250" x2="470" y2="250" stroke="currentColor" stroke-width="1.5" />
+            <line x1="94" y1="94" x2="406" y2="406" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" />
+            <line x1="406" y1="94" x2="94" y2="406" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" />
+
+            <!-- Radar Sweep Animation -->
+            <g class="animate-radar">
+              <path d="M250,250 L250,30 A220,220 0 0,1 470,250 Z" fill="url(#sweep-gradient)" opacity="0.15"/>
+            </g>
+
+            <defs>
+              <radialGradient id="sweep-gradient" cx="0%" cy="0%" r="100%">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.8"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+          </svg>
+
+          <!-- Quadrant Labels -->
+          <div class="absolute top-4 left-4 text-xs font-bold text-sky-400 bg-sky-950/60 border border-sky-800/50 px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur">
+            Q1 • Cambios y Tendencias
+          </div>
+          <div class="absolute top-4 right-4 text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/50 px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur">
+            Q2 • Actores Clave
+          </div>
+          <div class="absolute bottom-4 left-4 text-xs font-bold text-rose-400 bg-rose-950/60 border border-rose-800/50 px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur">
+            Q4 • Recursos y Limitaciones
+          </div>
+          <div class="absolute bottom-4 right-4 text-xs font-bold text-amber-400 bg-amber-950/60 border border-amber-800/50 px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur">
+            Q3 • Problemas del Entorno
+          </div>
+
+          <!-- Central Core Node -->
+          <div class="relative z-10 text-center p-4 rounded-2xl bg-slate-950 border-2 border-emerald-500/80 shadow-[0_0_30px_rgba(16,185,129,0.3)] max-w-[180px] hover:scale-105 transition-transform cursor-default">
+            <div class="w-8 h-8 mx-auto mb-1 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center font-bold">
+              ♻️
+            </div>
+            <span class="text-xs font-extrabold text-white block">OPORTUNIDAD</span>
+            <span class="text-[10px] text-emerald-400 font-medium leading-tight block mt-0.5">Valorización Orgánica Córdoba</span>
+          </div>
+
+          <!-- Radar Interactive Nodes -->
+          <!-- Q1 Node (Top-Left) -->
+          <button onclick="highlightDetail('tendencias')" class="absolute top-[22%] left-[22%] z-10 group">
+            <span class="relative flex h-5 w-5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-5 w-5 bg-sky-500 border-2 border-slate-900"></span>
+            </span>
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-slate-900 border border-sky-500/50 text-sky-200 text-[11px] font-semibold px-2.5 py-1 rounded shadow-lg whitespace-nowrap z-20">
+              Tendencia: Fertilizantes Caros & Consumo Verde
+            </div>
+          </button>
+
+          <!-- Q2 Node (Top-Right) -->
+          <button onclick="highlightDetail('actores')" class="absolute top-[25%] right-[22%] z-10 group">
+            <span class="relative flex h-5 w-5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 border-2 border-slate-900"></span>
+            </span>
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-slate-900 border border-emerald-500/50 text-emerald-200 text-[11px] font-semibold px-2.5 py-1 rounded shadow-lg whitespace-nowrap z-20">
+              Actores: Cafeticultores + Mercados + Municipio
+            </div>
+          </button>
+
+          <!-- Q3 Node (Bottom-Right) -->
+          <button onclick="highlightDetail('problemas')" class="absolute bottom-[24%] right-[24%] z-10 group">
+            <span class="relative flex h-5 w-5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-5 w-5 bg-amber-500 border-2 border-slate-900"></span>
+            </span>
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-slate-900 border border-amber-500/50 text-amber-200 text-[11px] font-semibold px-2.5 py-1 rounded shadow-lg whitespace-nowrap z-20">
+              Problema: Saturation de basureros y Lixiviados
+            </div>
+          </button>
+
+          <!-- Q4 Node (Bottom-Left) -->
+          <button onclick="highlightDetail('recursos')" class="absolute bottom-[22%] left-[24%] z-10 group">
+            <span class="relative flex h-5 w-5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-5 w-5 bg-rose-500 border-2 border-slate-900"></span>
+            </span>
+            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-slate-900 border border-rose-500/50 text-rose-200 text-[11px] font-semibold px-2.5 py-1 rounded shadow-lg whitespace-nowrap z-20">
+              Recurso: Abundancia de pulpa de café y desperdicios
+            </div>
+          </button>
+
+        </div>
+
+        <!-- Radar Dynamic Detail Panel (5 Cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Explorador de Cuadrantes</span>
+              <span class="text-[10px] text-slate-500">Haz clic en un botón para inspeccionar</span>
+            </div>
+
+            <!-- Quadrant Selector Buttons -->
+            <div class="grid grid-cols-2 gap-2 mt-4">
+              <button onclick="highlightDetail('problemas')" id="tab-prob" class="p-3 text-left rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 transition-all text-xs font-semibold text-amber-300 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                1. Problemas
+              </button>
+              <button onclick="highlightDetail('actores')" id="tab-act" class="p-3 text-left rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 transition-all text-xs font-semibold text-emerald-300 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                2. Actores Clave
+              </button>
+              <button onclick="highlightDetail('tendencias')" id="tab-tend" class="p-3 text-left rounded-xl border border-sky-500/30 bg-sky-500/10 hover:bg-sky-500/20 transition-all text-xs font-semibold text-sky-300 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+                3. Tendencias
+              </button>
+              <button onclick="highlightDetail('recursos')" id="tab-rec" class="p-3 text-left rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 transition-all text-xs font-semibold text-rose-300 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                4. Recursos / Retos
+              </button>
+            </div>
+
+            <!-- Dynamic Content Output Box -->
+            <div id="detail-box" class="mt-5 p-4 rounded-2xl bg-slate-950/80 border border-slate-800 min-h-[220px]">
+              <!-- Default Content (Problemas) -->
+              <div class="space-y-3">
+                <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                  Problemas & Necesidades del Entorno
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  Saturación de los sitios de disposición final en la zona centro de Veracruz, generación no controlada de gas metano por fermentación de residuos orgánicos y contaminación de acuíferos por lixiviados.
+                </p>
+                <div class="border-t border-slate-800/80 pt-2 text-[11px] text-slate-400 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span>• Pérdida de nutrientes en suelos agrícolas</span>
+                    <span class="text-amber-400 font-medium">Impacto Alto</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span>• Falta de separación en la fuente</span>
+                    <span class="text-amber-400 font-medium">Falla Sistémica</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Quick Strategic Tip Card -->
+          <div class="bg-gradient-to-r from-emerald-900/30 to-slate-900 border border-emerald-500/20 rounded-2xl p-4 flex items-start gap-3">
+            <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400 shrink-0">💡</div>
+            <div class="text-xs">
+              <span class="font-bold text-emerald-300 block mb-0.5">Insight de Negocio</span>
+              <p class="text-slate-400">
+                El valor no está únicamente en la venta del abono, sino en la **reducción del costo logístico de desecho** para las empresas generadoras.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VIEW 2: FULL CARDS GRID -->
+    <div id="view-cards" class="hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Card 1: Problemas -->
+        <div class="bg-slate-900 border border-amber-500/30 rounded-3xl p-6 relative overflow-hidden shadow-xl">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-bl-full pointer-events-none"></div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg border border-amber-500/30">
+              ⚠️
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white">1. Problemas y Necesidades</h3>
+              <p class="text-xs text-amber-400/80">Dolores del entorno local</p>
+            </div>
+          </div>
+          <ul class="space-y-3 text-xs text-slate-300">
+            <li class="flex items-start gap-2.5 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-amber-400 font-bold">•</span>
+              <div>
+                <strong class="text-slate-200 block">Saturación de rellenos sanitarios:</strong>
+                Los tiraderos municipales de Córdoba y la zona metropolitana están al límite de su capacidad operativa.
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-amber-400 font-bold">•</span>
+              <div>
+                <strong class="text-slate-200 block">Emisión de GEI y lixiviados:</strong>
+                La descomposición anaerobia de alimentos y pulpa de café genera metano y contaminación en mantos freáticos.
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-amber-400 font-bold">•</span>
+              <div>
+                <strong class="text-slate-200 block">Degradación de suelos agrícolas:</strong>
+                El uso intensivo de químicos ha erosionado los terrenos de siembra de café y cítricos en las zonas rurales adyacentes.
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card 2: Actores Clave -->
+        <div class="bg-slate-900 border border-emerald-500/30 rounded-3xl p-6 relative overflow-hidden shadow-xl">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-bl-full pointer-events-none"></div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg border border-emerald-500/30">
+              👥
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white">2. Actores Clave Implicados</h3>
+              <p class="text-xs text-emerald-400/80">Ecosistema de participantes</p>
+            </div>
+          </div>
+          <div class="space-y-3 text-xs">
+            <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-emerald-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Generadores (Proveedores de materia)</span>
+              <p class="text-slate-300">Mercados municipales (Revolución, Isla), cafeterías locales, beneficios de café y restaurantes.</p>
+            </div>
+            <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-emerald-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Clientes / Usuarios Finales</span>
+              <p class="text-slate-300">Pequeños y medianos cafeticultores, agricultores de cítricos, viveros urbanos y amantes de la jardinería.</p>
+            </div>
+            <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-emerald-400 font-bold uppercase text-[10px] tracking-wider block mb-1">Instituciones y Aliados</span>
+              <p class="text-slate-300">Ayuntamiento de Córdoba (Limpia Pública), SEDEMA Veracruz, asociaciones agrícolas locales.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Cambios y Tendencias -->
+        <div class="bg-slate-900 border border-sky-500/30 rounded-3xl p-6 relative overflow-hidden shadow-xl">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-sky-500/10 rounded-bl-full pointer-events-none"></div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-lg border border-sky-500/30">
+              📈
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white">3. Cambios y Tendencias</h3>
+              <p class="text-xs text-sky-400/80">Oportunidades del contexto</p>
+            </div>
+          </div>
+          <ul class="space-y-3 text-xs text-slate-300">
+            <li class="flex items-start gap-2.5 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-sky-400 font-bold">•</span>
+              <div>
+                <strong class="text-slate-200 block">Encarecimiento de insumos sintéticos:</strong>
+                El aumento global de precios de fertilizantes químicos obliga a buscar alternativas orgánicas accesibles.
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-sky-400 font-bold">•</span>
+              <div>
+                <strong class="text-slate-200 block">Normativas ambientales más estrictas:</strong>
+                Leyes gubernamentales que obligan a grandes generadores a pagar mayores tasas por tirar basura sin separar.
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-sky-400 font-bold">•</span>
+              <div>
+                <strong class="text-slate-200 block">Auge del consumo ecológico:</strong>
+                Preferencia del consumidor por productos sostenibles y empresas con certificaciones ambientales (ESG/Sello Verde).
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card 4: Recursos y Limitaciones -->
+        <div class="bg-slate-900 border border-rose-500/30 rounded-3xl p-6 relative overflow-hidden shadow-xl">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-bl-full pointer-events-none"></div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-lg border border-rose-500/30">
+              🛠️
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-white">4. Recursos y Limitaciones</h3>
+              <p class="text-xs text-rose-400/80">Capacidades e imposiciones</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-emerald-400 font-bold block mb-1">✔ Recursos Disponibles</span>
+              <ul class="space-y-1 text-slate-300">
+                <li>• Materia orgánica constante e inagotable.</li>
+                <li>• Redes de transporte local disponibles.</li>
+                <li>• Espacios rústicos aptos para compostaje.</li>
+              </ul>
+            </div>
+            <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+              <span class="text-rose-400 font-bold block mb-1">✖ Limitaciones / Barreras</span>
+              <ul class="space-y-1 text-slate-300">
+                <li>• Poca cultura de separación en origen.</li>
+                <li>• Inversión inicial en volteadoras y cribas.</li>
+                <li>• Desconfianza inicial de agricultores.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VIEW 3: BUSINESS IDEAS DERIVED -->
+    <div id="view-ideas" class="hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Idea 1 -->
+        <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-emerald-500/40 rounded-3xl p-6 shadow-2xl relative">
+          <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 text-[10px] font-bold uppercase tracking-wider rounded-full border border-emerald-500/30 mb-3 inline-block">
+            Modelo B2C / B2B Agro
+          </span>
+          <h3 class="text-xl font-extrabold text-white mb-1">EcoBio-Compost</h3>
+          <p class="text-xs text-emerald-400 mb-4">Biofertilizante y regenerador orgánico de suelos</p>
+          
+          <div class="space-y-3 text-xs text-slate-300">
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-slate-200 block mb-0.5">🎯 Público Objetivo:</span>
+              Cafeticultores, cítricos, viveros locales y aficionados al jardín urbano en la región de Córdoba.
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-slate-200 block mb-0.5">💡 Solución que aporta:</span>
+              Transforma la pulpa de café y basura orgánica en un abono orgánico enriquecido con lombricultura. Sustituye fertilizantes caros y restaura la fertilidad del suelo degradado.
+            </div>
+          </div>
+        </div>
+
+        <!-- Idea 2 -->
+        <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-sky-500/40 rounded-3xl p-6 shadow-2xl relative">
+          <span class="px-3 py-1 bg-sky-500/20 text-sky-300 text-[10px] font-bold uppercase tracking-wider rounded-full border border-sky-500/30 mb-3 inline-block">
+            Servicio Logístico B2B
+          </span>
+          <h3 class="text-xl font-extrabold text-white mb-1">Cirku-Ruta B2B</h3>
+          <p class="text-xs text-sky-400 mb-4">Gestión limpia y certificación verde para comercios</p>
+
+          <div class="space-y-3 text-xs text-slate-300">
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-slate-200 block mb-0.5">🎯 Público Objetivo:</span>
+              Restaurantes, cafeterías, hoteles y supermercados interesados en reducir huella ecológica.
+            </div>
+            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+              <span class="font-bold text-slate-200 block mb-0.5">💡 Solución que aporta:</span>
+              Recolecta separada programada mediante contenedores estancos, capacitación de personal y entrega de un "Sello de Impacto Verde" respaldado por la desviación efectiva de residuos.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Tab switching logic
+    function switchView(viewName) {
+      document.getElementById('view-radar').classList.add('hidden');
+      document.getElementById('view-cards').classList.add('hidden');
+      document.getElementById('view-ideas').classList.add('hidden');
+
+      document.getElementById('btn-radar').className = "px-4 py-1.5 rounded-md text-slate-400 hover:text-white transition-all";
+      document.getElementById('btn-cards').className = "px-4 py-1.5 rounded-md text-slate-400 hover:text-white transition-all";
+      document.getElementById('btn-ideas').className = "px-4 py-1.5 rounded-md text-slate-400 hover:text-white transition-all";
+
+      if(viewName === 'radar') {
+        document.getElementById('view-radar').classList.remove('hidden');
+        document.getElementById('btn-radar').className = "px-4 py-1.5 rounded-md bg-emerald-500 text-slate-950 font-bold shadow transition-all";
+      } else if(viewName === 'cards') {
+        document.getElementById('view-cards').classList.remove('hidden');
+        document.getElementById('btn-cards').className = "px-4 py-1.5 rounded-md bg-emerald-500 text-slate-950 font-bold shadow transition-all";
+      } else if(viewName === 'ideas') {
+        document.getElementById('view-ideas').classList.remove('hidden');
+        document.getElementById('btn-ideas').className = "px-4 py-1.5 rounded-md bg-emerald-500 text-slate-950 font-bold shadow transition-all";
+      }
+    }
+
+    // Detail Panel Logic
+    const detailsData = {
+      problemas: {
+        title: "1. Problemas & Necesidades",
+        color: "amber",
+        icon: "⚠️",
+        text: "Saturación acelerada de tiraderos locales, proliferación de gases de efecto invernadero (metano) y degradación de suelos de cultivo por falta de materia orgánica.",
+        bullets: ["Rellenos sanitarios saturados en Córdoba", "Erosión de suelos en fincas de café", "Poca cultura de reciclaje orgánico"]
+      },
+      actores: {
+        title: "2. Actores Clave",
+        color: "emerald",
+        icon: "👥",
+        text: "Ecosistema compuesto por generadores masivos de residuos, compradores de insumos orgánicos e instituciones reguladoras de gestión ambiental.",
+        bullets: ["Mercados, restaurantes y beneficios cafetaleros", "Cafeticultores y agricultores regionales", "Ayuntamiento y Dirección de Medio Ambiente"]
+      },
+      tendencias: {
+        title: "3. Cambios & Tendencias",
+        color: "sky",
+        icon: "📈",
+        text: "Aumento drástico en los precios de abonos sintéticos importados, políticas públicas hacia economía circular y preferencia por marcas con compromiso ambiental.",
+        bullets: ["Precios elevados de fertilizantes químicos", "Interés por certificaciones sostenibles", "Regulaciones ambientales más strictly"]
+      },
+      recursos: {
+        title: "4. Recursos & Limitaciones",
+        color: "rose",
+        icon: "🛠️",
+        text: "Abundancia de materia prima gratuita en contraste con retos en la separación en origen y la necesidad de inversión logística inicial.",
+        bullets: ["Suministro diario inagotable de desechos", "Infraestructura rústica disponible", "Desafío de educación y separación inicial"]
+      }
+    };
+
+    function highlightDetail(key) {
+      const data = detailsData[key];
+      const detailBox = document.getElementById('detail-box');
+      
+      const bulletsList = data.bullets.map(b => `<li class="flex items-center justify-between"><span>• ${b}</span></li>`).join('');
+
+      detailBox.innerHTML = `
+        <div class="space-y-3">
+          <div class="flex items-center gap-2 text-${data.color}-400 font-bold text-sm">
+            <span>${data.icon}</span>
+            ${data.title}
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            ${data.text}
+          </p>
+          <ul class="border-t border-slate-800/80 pt-2 text-[11px] text-slate-400 space-y-1">
+            ${bulletsList}
+          </ul>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
